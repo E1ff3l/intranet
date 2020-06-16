@@ -1,0 +1,53 @@
+/*------------------------------------------------------------------------------------- */
+/*  TOUTE LA CONSOLE 																	*/
+/*------------------------------------------------------------------------------------- */
+.wait {
+	display:				none;
+}
+
+.curseur {
+	cursor: 				pointer;
+}
+
+.erreur {
+	border: 				1px solid #D9534F;
+}
+
+.loading {
+	height:					45px;
+	border:					0px solid blue;
+}
+
+.alert a {
+	color:	#B94A48;
+	text-decoration: 		underline;
+}
+
+.alert a:hover {
+	color:					#B94A48;
+	text-decoration: 		none;
+}
+
+.d-none {
+    display: 				none !important;
+}
+
+/* ---- Gestion des drag & Drop ------------------- */
+.conteneur {
+	border: 				0px solid red;
+}
+.conteneur:hover {
+	background-color:		#F5F5F5;
+}
+.conteneur .padding {
+	padding:				8px;
+	border-top: 			1px solid #ddd;
+	/*border: 				0px solid blue;*/
+}
+
+#graph_client,
+#graph_commande {
+	width: 					200px;
+	height: 				200px;
+	margin: 				20px auto 0 auto;
+}

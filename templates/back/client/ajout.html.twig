@@ -1,0 +1,271 @@
+{% extends 'back/base.html.twig' %}
+
+{% form_theme form 'back/form/form_errors.html.twig' %}
+
+{% block title %}Back-Office - Gestion de client{% endblock %}
+
+{% block body %}
+
+    <div class="modal-shiftfix">
+    
+        {% include 'back/partials/navigation.html.twig' %}
+
+        <div class="container-fluid main-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="widget-container fluid-height">
+                                <div class="heading tabs">
+                                    <i class="fa fa-user"></i>{{ nom_client | raw }}
+                                    <ul class="nav nav-tabs pull-right" data-tabs="tabs" id="tabs">
+                                        <li class="active"><a data-toggle="tab" href="#infos"><i class="fa fa-user"></i><span>Informations</span></a></li>
+                                        <li><a data-toggle="tab" href="#projets"><i class="fa fa-folder-open"></i><span>Projets client</span></a></li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content padded" id="my-tab-content">
+
+                                    <!-- Informations du client -->
+                                    <div class="tab-pane  active" id="infos">
+                                        {{ form_start( form ) }}
+                                        
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.societe ) }}</label>
+                                                <div class="col-md-9">
+                                                    {% if form.societe.vars.valid %}
+                                                        {{ form_widget( form.societe, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                    {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                {{ form_widget( form.societe, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                                            
+                                                            {{ form_errors( form.societe ) }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.url ) }}</label>
+                                                <div class="col-md-9">
+                                                    {% if form.url.vars.valid %}
+                                                        <div class="input-group">
+                                                            {% if form.url.vars.value != '' %}
+                                                                <span class="input-group-addon"><i class="fa fa-globe"></i></span>
+                                                                {{ form_widget( form.url, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><a href="{{ form.url.vars.value }}" target="_blank"><i class="fa fa-external-link-square"></i></a></span>
+                                                            {% else %}
+                                                                <span class="input-group-addon"><i class="fa fa-globe"></i></span>
+                                                                {{ form_widget( form.url, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                            {% endif %}
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"><i class="fa fa-globe"></i></span>
+                                                                {{ form_widget( form.url, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                                            
+                                                            {{ form_errors( form.url ) }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.online ) }}</label>
+                                                <div class="col-md-9">
+                                                    <div class="toggle-switch text-toggle-switch"data-off="danger"  data-off-label="Inactif" data-on="success" data-on-label="Actif">
+                                                        {{ form_widget( form.online ) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.nom ) }}</label>
+                                                <div class="col-md-9">
+                                                    {% if form.nom.vars.valid %}
+                                                        {{ form_widget( form.nom, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                    {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                {{ form_widget( form.nom, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                                            
+                                                            {{ form_errors( form.nom ) }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.prenom ) }}</label>
+                                                <div class="col-md-9">
+                                                    {% if form.prenom.vars.valid %}
+                                                        {{ form_widget( form.prenom, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                    {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                {{ form_widget( form.prenom, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                                            
+                                                            {{ form_errors( form.prenom ) }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.mail ) }}</label>
+                                                <div class="col-md-9">
+                                                    {% if form.mail.vars.valid %}
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">@</span>
+                                                            {{ form_widget( form.mail, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">@</span>
+                                                                {{ form_widget( form.mail, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                                            
+                                                            {{ form_errors( form.mail ) }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.tel ) }}</label>
+                                                <div class="col-md-9">{{ form_widget( form.tel, { 'attr' : { 'class' : 'form-control' } } ) }}</div>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.mobile ) }}</label>
+                                                <div class="col-md-9">{{ form_widget( form.mobile, { 'attr' : { 'class' : 'form-control' } } ) }}</div>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.fax ) }}</label>
+                                                <div class="col-md-9">{{ form_widget( form.fax, { 'attr' : { 'class' : 'form-control' } } ) }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.adresse ) }}</label>
+                                                <div class="col-md-9">
+                                                    {% if form.adresse.vars.valid %}
+                                                        {{ form_widget( form.adresse, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                    {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                {{ form_widget( form.adresse, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                                            
+                                                            {{ form_errors( form.adresse ) }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.adresse_suite ) }}</label>
+                                                <div class="col-md-9">{{ form_widget( form.adresse_suite, { 'attr' : { 'class' : 'form-control' } } ) }}</div>
+                                            </div>
+                                            <div class="col-md-4 form-group">&nbsp;</div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.cp ) }}</label>
+                                                <div class="col-md-9">
+                                                    {% if form.cp.vars.valid %}
+                                                        {{ form_widget( form.cp, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                    {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                {{ form_widget( form.cp, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                                            
+                                                            {{ form_errors( form.cp ) }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.ville ) }}</label>
+                                                <div class="col-md-9">
+                                                    {% if form.ville.vars.valid %}
+                                                        {{ form_widget( form.ville, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                    {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                {{ form_widget( form.ville, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                                            
+                                                            {{ form_errors( form.ville ) }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 form-group">
+                                                <label class="control-label col-md-3">{{ form_label( form.pays ) }}</label>
+                                                <div class="col-md-9">{{ form_widget( form.pays, { 'attr' : { 'class' : 'form-control' } } ) }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Boutons -->
+                                        <div class="row">
+                                            <div class="col-md-4 form-group">
+                                                <div class="col-md-3">&nbsp;</div>
+                                                <div class="col-md-9">
+                                                    <a href="{{ path( "bo_client_liste" ) }}" class="btn btn-default">Retour</a>
+                                                    <button type="submit" class="btn btn-primary">{{texte_btn}}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{ form_end(form) }}
+                                    
+                                    </div>
+
+                                    <!-- Liste des projets associés au client -->
+                                    <div class="tab-pane" id="projets">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <th>Titre du projet</th>
+                                                <th width="100" align="center">Etat</th>
+                                                <th width="100" align="center">Tarif</th>
+                                            </thead>
+                                            
+                                            <tbody>
+                                                {% for projet in projets %}
+                                                    {% set style = "style=background-color:\#" ~ projet.projetEtat.couleur ~ ";" %}
+                                                    <tr>
+                                                        <td><a href="{{ path( "bo_projet_edition", { 'id': projet.id } ) }}">{{ projet.titre }}</a></td>
+                                                        <td align="center"><span class="label" {{ style }}>{{ projet.projetEtat.etat }}</span></td>
+                                                        <td align="center">{{ projet.prix }} €</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

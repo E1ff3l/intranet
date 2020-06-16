@@ -1,0 +1,57 @@
+
+    /* ---- Message de haut de page ------------------------------------------ */
+    #div_message {
+        min-height: 100px !important;
+    }
+    
+    #div_message.info .heading, #div_message.info span i,
+    #div_message.success .heading, #div_message.success span i,
+    #div_message.warning .heading, #div_message.warning span i,
+    #div_message.danger .heading, #div_message.danger span i {
+        font-size: 25px;
+    }
+
+    #div_message.info {
+        border: 2px solid #007AFF;
+        background-color: #D9EDF7;
+    }
+    #div_message.info .heading {
+        background-color: #D9EDF7;
+    }
+    #div_message.info span, #div_message.info p {
+        color: #007AFF;
+    }
+
+    #div_message.success {
+        border: 2px solid green;
+        background-color: #DFF0D8;
+    }
+    #div_message.success .heading {
+        background-color: #DFF0D8;
+    }
+    #div_message.success span, #div_message.success p {
+        color: green;
+    }
+
+    #div_message.warning {
+        border: 2px solid #F0AD4E;
+        background-color: #FCF8E3;
+    }
+    #div_message.warning .heading {
+        background-color: #FCF8E3;
+    }
+    #div_message.warning span, #div_message.warning p {
+        color: #F0AD4E;
+    }
+
+    #div_message.danger {
+        border: 2px solid #CC3300;
+        background-color: #F2DEDE;
+    }
+    #div_message.danger .heading {
+        background-color: #F2DEDE;
+    }
+    #div_message.danger span, #div_message.danger p {
+        color: #CC3300;
+    }
+    /* ----------------------------------------------------------------------- */

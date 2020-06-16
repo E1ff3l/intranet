@@ -1,0 +1,144 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Back-Office - Liste des projets{% endblock %}
+
+{% block body %}
+
+    <div class="modal-shiftfix">
+    
+        {% include 'back/partials/navigation.html.twig' %}
+
+        <div class="container-fluid main-content">
+            
+            <!-- Tris possibles -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="widget-container fluid-height clearfix">
+                        <div class="heading">
+                            <i class="fa fa-sort-amount-asc"></i>Tris possibles
+                        </div>
+
+                        <div class="widget-content padded">
+                            <form action="#" class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="control-label col-md-1">Etat</label>
+                                    <div class="col-md-7">
+                                        <label class="radio-inline"><input type="radio" name="num_etat" value="" checked ><span>Tous</span></label>
+                                        {% for etat in etats %}
+                                            {% set checked = ( num_etat == etat.id ) ? 'checked' : '' %}
+                                            <label class="radio-inline"><input type="radio" name="num_etat" value="{{ etat.id }}" {{ checked }}><span>{{ etat.etat }}</span></label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des projets -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="widget-container fluid-height clearfix">
+                        <div class="heading">
+                            <i class="fa fa-folder-open-o"></i>Projets existants
+                            <a href="{{ path( "bo_projet_edition" ) }}" id="btn_ajouter" class="btn btn-primary ladda-button pull-right" data-style="expand-right"><span class="ladda-label"><i class="fa fa-plus-square"></i>Ajouter un projet</span></a >
+                        </div>
+
+                        <div class="widget-content padded clearfix">
+                            <table id="dataTable" class="table table-striped">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Titre</th>
+                                    <th>Société</th>
+                                    <th width=100>Etat</th>
+                                    <th width=100>Tarif en €</th>
+                                    <th width=100>&nbsp;</th>
+                                </thead>
+
+                                <tbody>
+                                    {% for projet in projets %}
+										{% set style = "style=background-color:\#" ~ projet.projetEtat.couleur ~ ";" %}
+										{% for fichier in projet.projetFichiers %}
+											{% if projet.projetEtat.id == 6 or projet.projetEtat.id == 7 %}
+												
+											{% endif %}
+										{% endfor %}
+                                        <tr>
+                                            <td>{{projet.id}}</td>
+                                            <td><a href="{{ path( "bo_projet_edition", { 'id': projet.id } ) }}">{{projet.titre}}</a></td>
+                                            <td><a href="{{ path( "bo_client_edition", { 'id': projet.client.id } ) }}">{{projet.client.societe}}</a></td>
+                                            <td align="center"><span class="label" {{ style }}>{{ projet.projetEtat.etat }}</span></td>
+                                            <td>{{projet.prix}}</td>
+                                            <td>
+                                                <div class='action-buttons text-right'>
+													{% if projet.fichierFacture != '' %}
+														<a href='{{ path( "bo_projet_facture", { 'fichier': projet.fichierFacture } ) }}' class='table-actions'><i class='fa fa-download ttip' title="Télécharger la facture"></i></a>
+                                                    {% endif %}
+                                                    <a href='{{ path( "bo_projet_copie", { 'id': projet.id } ) }}' class='table-actions'><i class='fa fa-copy ttip' title="Dupliquer ce projet"></i></a>
+                                                    <a href='{{ path( "bo_projet_edition", { 'id': projet.id } ) }}' class='table-actions'><i class='fa fa-edit ttip' title="Modifier ce projet"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+
+        $(document).ready(function() {
+            
+            /*
+            # =============================================================================
+            #   Tri des résultats
+            # =============================================================================
+            */
+
+            $( "input[name=num_etat]" ).click( function() {
+                var val =                           $(this).val();
+                //alert( "Affichage de " + val );
+                window.location.href =              "/console/projet_liste/" + val;
+            });
+
+
+            /*
+            # =============================================================================
+            #   DataTables
+            # =============================================================================
+            */
+
+            var recherche = 		                '';
+
+            var oTable =                            $ ("#dataTable" ).dataTable({
+                "bFilter": 							true,
+                "bSortable": 						false,
+                "bAutoWidth": 						false,
+                "bLengthChange": 					false,
+                "bPaginate": 						true,
+                "sPaginationType": 					"full_numbers",
+                "oSearch": 							{ "sSearch": recherche },
+                "bScrollCollapse": 					false,
+                "iDisplayLength": 					15,
+                "aoColumnDefs": [
+                    { 'bSortable': false, 'aTargets': [ 5 ] }
+                ]
+            });
+
+            oTable.fnSort( [ [0,'desc'] ] );
+
+        });
+
+    </script>
+
+{% endblock %}

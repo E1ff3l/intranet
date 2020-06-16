@@ -1,0 +1,87 @@
+# Dashboard
+bo_dashboard:
+    path:       /console/dashboard
+    controller: App\Controller\Back\DashboardController::dashboard
+
+    
+# Profil utilisateur
+bo_profil:
+    path:       /console/mon_profil
+    controller: App\Controller\Back\ClientController::profil
+
+
+# Gestion des clients
+bo_client_liste:
+    path:       /console/client_liste
+    controller: App\Controller\Back\ClientController::lister
+
+bo_client_liste_inactif:
+    path:       /console/client_liste_inactif
+    controller: App\Controller\Back\ClientController::liste_inactif
+
+bo_client_edition:
+    path:                   /console/client_edition/{id}
+    defaults:    
+        id:                 0
+    controller:             App\Controller\Back\ClientController::editer
+
+
+# Gestion des projets
+bo_projet_liste:
+    path:                   /console/projet_liste/{num_etat}
+    defaults:    
+        num_etat:           ''
+    controller:             App\Controller\Back\ProjetController::lister
+
+bo_projet_edition:
+    path:       /console/projet_edition/{id}/{onglet_actif}
+    defaults:    
+        id:                 0
+        onglet_actif:       'infos'
+    controller:             App\Controller\Back\ProjetController::editer
+
+bo_projet_copie:
+    path:                   /console/projet_copie/{id}
+    controller:             App\Controller\Back\ProjetController::dupliquer
+
+bo_projet_facture:
+    path:                   /console/projet/{fichier}
+    controller:             App\Controller\Back\ProjetController::telechargerFacture
+
+
+# Gestion des fichiers associés aux projets
+bo_fichier_projet_upload:
+    path:       /console/fichier_projet_upload
+    controller: App\Controller\Back\ProjetFichierController::uploader
+
+bo_fichier_projet_ajout:
+    path:       /console/fichier_projet_ajout
+    controller: App\Controller\Back\ProjetFichierController::ajouter
+
+bo_fichier_projet_suppression:
+    path:       /console/fichier_projet_suppression
+    controller: App\Controller\Back\ProjetFichierController::supprimer
+
+
+# Gestion des hébergements
+bo_hosting_liste:
+    path:       /console/hosting_liste
+    controller: App\Controller\Back\HostingController::lister
+
+bo_hosting_edition:
+    path:       /console/hosting_edition/{id}
+    defaults:    
+        id:     0
+    controller: App\Controller\Back\HostingController::editer
+
+bo_hosting_suppression:
+    path:       /console/hosting_suppression/{id}
+    defaults:    
+        id:     0
+    controller: App\Controller\Back\HostingController::supprimer
+
+
+# Restomalin
+bo_restomalin:
+    path:       /console/restomalin
+    controller: App\Controller\Back\RestomalinController::index

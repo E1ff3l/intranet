@@ -1,0 +1,234 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Back-Office - Restomalin{% endblock %}
+
+{% block stylesheets %}
+
+    <link href="/lib/chart.js-2.9.1/dist/Chart.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="modal-shiftfix">
+
+    {% include 'back/partials/navigation.html.twig' %}
+
+    <div class="container-fluid main-content">
+        <div class="row">
+
+            <!-- Mois en cours -->
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="widget-container">
+                            <div class="heading">
+                                <i class="fa fa-dashboard"></i>Mois en cours
+                            </div>
+                            <div class="widget-content padded">
+
+                                <div id="canvas-holder">
+                                    <canvas id="chart-area"></canvas>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistiques par période -->
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="widget-container">
+                            <form id="form_statistique" method="POST" action="{{ path( 'bo_restomalin' ) }}" class="form-horizontal">
+                                <div class="visible-lg heading tabs">
+                                    <i class="fa fa-dashboard"></i>Statistiques sur la période <b>{{ annee_courante }}</b>
+                                    <ul class="nav nav-tabs pull-right" data-tabs="tabs" id="tabs">
+                                        <li><a data-toggle="tab" href="#option"><i class="fa fa-gears"></i><span>Options</span></a></li>
+                                        <li class="active"><a data-toggle="tab" href="#commission"><i class="fa fa-bitcoin"></i><span>Commission</span></a></li>
+                                        <li><a data-toggle="tab" href="#mode"><i class="fa fa-shopping-cart"></i><span>Mode</span></a></li>
+                                        <li><a data-toggle="tab" href="#commande"><i class="fa fa-headphones"></i><span>Commande</span></a></li>
+                                        <li><a data-toggle="tab" href="#support"><i class="fa fa-mobile"></i><span>Support</span></a></li>
+                                        <li><a data-toggle="tab" href="#connexion"><i class="fa fa-user"></i><span>Connexion</span></a></li>
+                                    </ul>
+                                </div>
+                                <div class="hidden-lg heading tabs">
+                                    <i class="fa fa-dashboard"></i><b>{{ annee_courante }}</b>
+                                    <ul class="nav nav-tabs pull-right" data-tabs="tabs" id="tabs">
+                                        <li><a data-toggle="tab" href="#option"><i class="fa fa-gears"></i></a></li>
+                                        <li class="active"><a data-toggle="tab" href="#commission"><i class="fa fa-bitcoin"></i></a></li>
+                                        <li><a data-toggle="tab" href="#mode"><i class="fa fa-shopping-cart"></i></a></li>
+                                        <li><a data-toggle="tab" href="#commande"><i class="fa fa-headphones"></i></a></li>
+                                        <li><a data-toggle="tab" href="#support"><i class="fa fa-mobile"></i></a></li>
+                                        <li><a data-toggle="tab" href="#connexion"><i class="fa fa-user"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content padded" id="my-tab-content">
+                                    <div class="tab-pane" id="option">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2">Année à visualiser</label>
+                                            <div class="col-md-1">
+                                                <select name="annee" id="annee" class="form-control">
+                                                    {% for annee in 2010..annee_max %}
+                                                        {% if annee_courante == annee %}
+                                                            {% set selected = 'selected' %}
+                                                        {% else %}
+                                                            {% set selected = '' %}
+                                                        {% endif %}
+                                                        <option value="{{annee}}" {{ selected }} >{{annee}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane active" id="commission">
+                                        <div class="widget-container">
+                                            <div class="widget-content padded">
+                                                <canvas id="canvas_commission"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="mode">
+                                        <div class="widget-container">
+                                            <div class="widget-content padded">
+                                                <canvas id="canvas_mode"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="commande">
+                                        <div class="widget-container">
+                                            <div class="widget-content padded">
+                                                <canvas id="canvas_commande"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="support">
+                                        <div class="widget-container">
+                                            <div class="widget-content padded">
+                                                <canvas id="canvas_support"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="connexion">
+                                        <div class="widget-container">
+                                            <div class="widget-content padded">
+                                                <canvas id="canvas_client"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    
+    <script src="/lib/chart.js-2.9.1/dist/Chart.min.js"></script>
+    <script src="/lib/chart.js-2.9.1/dist/utils.js"></script>
+
+    <script>
+        
+        $(document).ready(function () {
+
+            // ---- Modification de la période de visualisation --------------------------------- //
+            $( "#annee" ).change(function() {
+                //alert( 'Modif...' );
+                $( '#form_statistique' ).submit();
+            });
+            // ---------------------------------------------------------------------------------- //
+
+        });
+
+    </script>
+    
+    <script>
+        var MONTHS =                ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembrer', 'Octobre', 'Novembre', 'Décembre'];
+        var ca =                    {{ stats_mois.ca }};
+        var commission =            {{ stats_mois.commission }};
+        var ma_comm =               {{ stats_mois.comm_kiki }};
+    </script>
+    <script src="/back/js/chart_mois_courant.js"></script>
+
+    <script>
+        
+        var comm_variable_periode = {{ stats_periode.commission }};
+        var comm_variable_fixe =    {{ stats_periode.forfait }};
+    </script>
+    <script src="/back/js/chart_commission.js"></script>
+
+    <script>
+        var mode_livraison =        {{ stats_periode.mode_livraison }};
+        var mode_ae =               {{ stats_periode.mode_ae }};
+    </script>
+    <script src="/back/js/chart_mode.js"></script>
+    
+    <script>
+        var commande_midi =         {{ stats_periode.mode_livraison }};
+        var commande_soir =         {{ stats_periode.mode_ae }};
+    </script>
+    <script src="/back/js/chart_commande.js"></script>
+    
+    <script src="/back/js/chart_commande.js"></script>
+    <script>
+        var support_rm =            {{ stats_periode.support_rm }};
+        var support_smart =         {{ stats_periode.support_smart }};
+        var support_vit =           {{ stats_periode.support_vit }};
+        var support_autre =         {{ stats_periode.support_autre }};
+    </script>
+    <script src="/back/js/chart_support.js"></script>
+   
+    <script>
+        var client_connecte =       {{ stats_periode.client_connecte }};
+        var client_express =        {{ stats_periode.client_express }};
+    </script>
+    <script src="/back/js/chart_client.js"></script>
+
+    <script>
+
+        window.onload = function () {
+
+            // ---- Mois en cours
+            var ctx = document.getElementById('chart-area').getContext('2d');
+            window.myDoughnut = new Chart( ctx, config_mois_courant );
+
+            // ---- Statistiques par période / Commission
+            var ctx = document.getElementById('canvas_commission').getContext('2d');
+            window.myLine = new Chart(ctx, config_commission);
+            
+            // ---- Statistiques par mode
+            var ctx = document.getElementById('canvas_mode').getContext('2d');
+            window.myLine = new Chart(ctx, config_mode);
+
+            // ---- Statistiques par commande
+            var ctx = document.getElementById('canvas_commande').getContext('2d');
+            window.myLine = new Chart(ctx, config_commande);
+            
+            // ---- Statistiques par support
+            var ctx = document.getElementById('canvas_support').getContext('2d');
+            window.myLine = new Chart(ctx, config_support);
+            
+            // ---- Statistiques par type de client
+            var ctx = document.getElementById('canvas_client').getContext('2d');
+            window.myLine = new Chart(ctx, config_client);
+        };
+
+    </script>
+
+{% endblock %}

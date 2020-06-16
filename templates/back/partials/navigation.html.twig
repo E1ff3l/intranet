@@ -1,0 +1,86 @@
+    <!-- Navigation -->
+    <div class="navbar navbar-fixed-top scroll-hide">
+        <div class="container-fluid top-bar">
+            <div class="pull-right">
+                <ul class="nav navbar-nav pull-right">
+                    <li class="dropdown user hidden-xs">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ app.user.prenom }} {{ app.user.nom }}<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ path( "bo_profil" ) }}"><i class="fa fa-user"></i>Mon profil</a></li>
+                            <li><a href="{{ path( "admin_logout" ) }}"><i class="fa fa-sign-out"></i>Déconnexion</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <button class="navbar-toggle">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+            <a class="logo" href="{{ path( "bo_dashboard" ) }}">se7en</a>
+        </div>
+        <div class="container-fluid main-nav clearfix">
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li><a href="{{ path( "bo_dashboard" ) }}" {% if menu_courant == "dashboard" %}class="current"{% endif %}><span aria-hidden="true" class="se7en-home"></span>Dashboard</a></li>
+                    <li class="dropdown"><a href="#" data-toggle="dropdown" {% if menu_courant == "client" %}class="current"{% endif %}>
+                        <span aria-hidden="true" class="se7en-forms"></span>Gestion des clients<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ path( "bo_client_liste" ) }}"><p>Liste des clients <span class="label label-success">Actif</span></p></a></li>
+                            <li><a href="{{ path( "bo_client_edition" ) }}"><p>Ajout / Modif</p></a></li>
+                            <li><a href="{{ path( "bo_client_liste_inactif" ) }}"><p>Liste des clients <span class="label label-danger">Inactif</span></p></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown"><a href="#" data-toggle="dropdown" {% if menu_courant == "projet" %}class="current"{% endif %}>
+                        <span aria-hidden="true" class="se7en-pages"></span>Gestion des projets<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ path( "bo_projet_liste", { num_etat : 2 } ) }}"><p>Liste des projets</p></a></li>
+                            <li><a href="{{ path( "bo_projet_edition" ) }}"><p>Ajout / Modif</p></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown"><a href="#" data-toggle="dropdown" {% if menu_courant == "hosting" %}class="current"{% endif %}>
+                        <span aria-hidden="true" class="se7en-feed"></span>Hébergement<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ path( "bo_hosting_liste" ) }}"><p>Liste des hébergements</p></a></li>
+                            <li><a href="{{ path( "bo_hosting_edition" ) }}"><p>Ajout / Modif</p></a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="{{ path( "bo_restomalin" ) }}" {% if menu_courant == "restomalin" %}class="current"{% endif %}><span aria-hidden="true" class="se7en-star"></span>Restomalin</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- End Navigation -->
+    
+
+    {% for label, messages in app.flashes %}
+
+        <div class="container-fluid main-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="div_message" class="widget-container {{ label }}">
+                        <div class="heading">
+                            {% if label == 'info' %}
+                                <span><i class="fa fa-info-circle"></i>Information</span>
+                            {% elseif label == 'success' %}
+                                <span><i class="fa fa-check-circle"></i>Bravo!</span>
+                            {% elseif label == 'warning' %}
+                                <span><i class="fa fa-exclamation-circle"></i>Attention...</span>
+                            {% elseif label == 'danger' %}
+                                <span><i class="fa fa-times-circle"></i>ERREUR!</span>
+                            {% endif %}
+                        </div>
+                        <div class="padded">
+                            {% for message in messages %}
+                                <p>{{ message | raw }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}

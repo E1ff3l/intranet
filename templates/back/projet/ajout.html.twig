@@ -1,0 +1,537 @@
+{% extends 'back/base.html.twig' %}
+
+{% form_theme form 'back/form/form_errors.html.twig' %}
+{% form_theme form _self %}
+
+{% block title %}Back-Office - Gestion de projet{% endblock %}
+
+{% block stylesheets %}
+
+    <style>
+
+        .single-file-drop:hover, .hover {
+            color: #000000;
+            cursor: pointer;
+            border: 2px dashed #000000;
+        }
+
+    </style>
+
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="modal-shiftfix">
+    
+        {% include 'back/partials/navigation.html.twig' %}
+
+        <div class="container-fluid main-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="widget-container fluid-height">
+                                <div class="heading tabs">
+                                    <i class="fa fa-folder-open-o"></i>{{ nom_projet | raw }}
+                                    <ul class="nav nav-tabs pull-right" data-tabs="tabs" id="tabs">
+                                        <li class="active"><a data-toggle="tab" href="#infos"><i class="fa fa-user"></i><span>Informations</span></a></li>
+                                        <li><a data-toggle="tab" href="#fichiers"><i class="fa fa-file"></i><span>Fichiers joints</span></a></li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content padded" id="my-tab-content">
+
+                                    <!-- Informations du client -->
+                                    <div class="tab-pane active" id="infos">
+                                        {{ form_start( form ) }}
+
+                                            <!-- Infos diverses -->
+                                            <div class="row">
+                                                <div class="col-md-3 form-group">
+                                                    <label class="control-label col-md-3">{{ form_label( form.titre ) }}</label>
+                                                    <div class="col-md-9">
+                                                        {% if form.titre.vars.valid %}
+                                                        {{ form_widget( form.titre, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                        {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                {{ form_widget( form.titre, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                            
+                                                            {{ form_errors( form.titre ) }}
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-3 form-group">
+                                                    <label class="control-label col-md-3">{{ form_label( form.client ) }}</label>
+                                                    <div class="col-md-9">{{ form_widget( form.client, { 'attr' : { 'class' : 'form-control' } } ) }}</div>
+                                                </div>
+                                                
+                                                <div class="col-md-3 form-group">
+                                                    <label class="control-label col-md-3">{{ form_label( form.projetEtat ) }}</label>
+                                                    <div class="col-md-9">{{ form_widget( form.projetEtat, { 'attr' : { 'class' : 'form-control' } } ) }}</div>
+                                                </div>
+                                                
+                                                <div class="col-md-3 form-group">
+                                                    <div class="col-md-12">
+                                                        <label class="checkbox-inline"><input type="checkbox" name="generationPdf" value="1"><span>Générer PDF</span></label>
+                                                        <label class="checkbox-inline"><input type="checkbox" name="apercuPdf" value="1"><span>Aperçu PDF</span></label></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Tarif & acomptes -->
+                                            <div class="row">
+                                                
+                                                <div class="col-md-3 form-group">
+                                                    <label class="control-label col-md-3">{{ form_label( form.prix ) }}</label>
+                                                    <div class="col-md-9">
+                                                        {% if form.prix.vars.valid %}
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">€</span>
+                                                            {{ form_widget( form.prix, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                        </div>
+                                                        {% else %}
+                                                        <div class="has-error">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">€</span>
+                                                                {{ form_widget( form.prix, { 'attr' : { 'class' : 'form-control' } } ) }}
+                                                                <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                            </div>
+                                                
+                                                            {{ form_errors( form.prix ) }}
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 form-group">
+
+                                                    {{ form_row( form.projetAcomptes ) }}
+
+                                                </div>
+
+                                                <div class="col-md3 form-group">
+                                                    <button type="button" id="btn_ajout_acompte" class="btn btn-primary"><i class="fa fa-plus"></i>Ajouter un acompte</button>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 form-group">
+                                                    <div class="col-md-12">
+                                                        {{ form_label( form.description ) }}
+                                                        {{ form_widget( form.description ) }}
+                                                        <textarea id="description_editeur"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <div class="col-md-12">
+                                                        {{ form_label( form.descriptionInterne ) }}
+                                                        {{ form_widget( form.descriptionInterne ) }}
+                                                        <textarea id="descriptionInterne_editeur"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-3 form-group">
+                                                    <label class="control-label col-md-3">{{ form_label( form.dateFin ) }}</label>
+                                                    <div class="col-md-9">
+                                                        {% if form.dateFin.vars.valid %}
+                                                            <div class="input-group">
+                                                                <span val="#projet_dateFin" class="input-group-addon icone"><i class="fa fa-calendar"></i></span>
+                                                                {{ form_widget( form.dateFin, { 'attr' : { 'class' : 'form-control datepicker' } } ) }}
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="has-error">
+                                                                <div class="input-group">
+                                                                    <span val="#projet_dateFin" class="input-group-addon icone"><i class="fa fa-calendar"></i></span>
+                                                                    {{ form_widget( form.dateFin, { 'attr' : { 'class' : 'form-control datepicker' } } ) }}
+                                                                    <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                                </div>
+                                                                
+                                                                {{ form_errors( form.dateFin ) }}
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 form-group">
+                                                    <label class="control-label col-md-3">{{ form_label( form.dateFacturation ) }}</label>
+                                                    <div class="col-md-9">
+                                                        {% if form.dateFacturation.vars.valid %}
+                                                            <div class="input-group">
+                                                                <span val="#projet_dateFacturation" class="input-group-addon icone"><i class="fa fa-calendar"></i></span>
+                                                                {{ form_widget( form.dateFacturation, { 'attr' : { 'class' : 'form-control datepicker' } } ) }}
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="has-error">
+                                                                <div class="input-group">
+                                                                    <span val="#projet_dateFacturation" class="input-group-addon icone"><i class="fa fa-calendar"></i></span>
+                                                                    {{ form_widget( form.dateFacturation, { 'attr' : { 'class' : 'form-control datepicker' } } ) }}
+                                                                    <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                                </div>
+                                                                
+                                                                {{ form_errors( form.dateFacturation ) }}
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 form-group">
+                                                    <label class="control-label col-md-3">{{ form_label( form.datePaiement ) }}</label>
+                                                    <div class="col-md-9">
+                                                        {% if form.datePaiement.vars.valid %}
+                                                            <div class="input-group">
+                                                                <span val="#projet_datePaiement" class="input-group-addon icone"><i class="fa fa-calendar"></i></span>
+                                                                {{ form_widget( form.datePaiement, { 'attr' : { 'class' : 'form-control datepicker' } } ) }}
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="has-error">
+                                                                <div class="input-group">
+                                                                    <span val="#projet_datePaiement" val="date_livraison" class="input-group-addon icone"><i class="fa fa-calendar"></i></span>
+                                                                    {{ form_widget( form.datePaiement, { 'attr' : { 'class' : 'form-control datepicker' } } ) }}
+                                                                    <span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+                                                                </div>
+                                                                
+                                                                {{ form_errors( form.datePaiement ) }}
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                                
+                                            <!-- Boutons -->
+                                            <div class="row">
+                                                <div class="col-md-4 form-group">
+                                                    <div class="col-md-3">&nbsp;</div>
+                                                    <div class="col-md-9">
+                                                        <a href="{{ path( "bo_projet_liste" ) }}" class="btn btn-default"><i class="fa fa-mail-reply"></i>Retour</a>
+                                                        <a href="{{ path( "bo_projet_copie", { 'id': id_projet } ) }}" class="btn btn-github"><i class="fa fa-copy"></i>Dupliquer</a>
+                                                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>{{texte_btn}}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
+                                        {{ form_end( form ) }}
+                                    
+                                    </div>
+
+                                    <!-- Liste des projets associés au client -->
+                                    <div class="tab-pane" id="fichiers">
+                                        <div class="container-fluid main-content">
+                                            <div class="row">
+
+                                                <!-- Zone d'upload -->
+                                                <div class="col-md-6">
+                                                
+                                                    <div id="div_affichage_success" class="alert alert-success wait" style="margin-top: 10px;">
+                                                        <button class="close" data-dismiss="alert" type="button">&times;</button>Upload de fichiers terminé.
+                                                    </div>
+                                                    <div id="div_affichage_warning" class="alert alert-danger wait" style="margin-top: 10px;"></div>
+                                                    <div id="div_drop" class="single-file-drop">
+                                                        <div id="div_drop_depot">
+                                                            <p style="padding-top: 50px;" class="h4">
+                                                                Déposez vos fichiers ici<br>ou
+                                                            </p>
+                                                            <p style="padding-bottom: 25px;"><a href="#" id="browse" class="btn btn-default"><i class="icon-folder-open"></i>Parcourir</a></p>
+                                                        </div>
+                                                        <div id="div_arret_upload" style="padding: 50px 0px 95px;" class="wait">
+                                                            <button class="btn btn-danger stopper"><i class="icon-remove-sign"></i>Stopper tous les uploads</button>
+                                                        </div>
+                                                    </div>
+                                                    <div id="filelist" style="margin-top: 25px; border:0px solid red;"></div>
+
+                                                </div>
+
+                                                <!-- Liste des fichiers -->
+                                                <div class="col-md-6">
+                                                    <div class="widget-container fluid-height clearfix">
+                                                        <div class="widget-content padded">
+                                                            <table id="liste_fichier" class="table table-striped">
+                                                                <thead>
+                                                                    <th width="25">&nbsp;</th>
+                                                                    <th>Titre du fichier</th>
+                                                                </thead>
+                                                                
+                                                                <tbody>
+                                                                    {% include 'back/projet/fichier_liste.html.twig' %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <!-- Boutons -->
+                                            <div class="row">
+                                                <div class="col-md-4 form-group">
+                                                    <div class="col-md-3">&nbsp;</div>
+                                                    <div class="col-md-9">
+                                                        <a href="{{ path( "bo_projet_liste" ) }}" class="btn btn-default">Retour</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+    
+{% block javascripts %}
+
+    {% if onglet_actif is not defined %}
+        {% set onglet_actif = "infos" %}
+    {% endif  %}
+
+    {# {% set onglet_actif = "fichiers" %} #}
+
+    <script>
+        var id_projet =                             '{{ id_projet }}';
+        var url_upload =                            '{{ path( "bo_fichier_projet_upload" ) }}';
+        var url_ajout =                             '{{ path( "bo_fichier_projet_ajout" ) }}';
+    </script>
+
+    <script src="/back/js/plupload-2.3.6/js/plupload.full.min.js" type="text/javascript"></script>
+    <script src="/back/js/plupload-2.3.6/js/i18n/fr.js" type="text/javascript"></script>
+    <script src="/back/js/js_upload-2.3.6.js" type="text/javascript"></script>
+    <script>
+
+        $(document).ready(function() {
+            
+            // ---- Activation de l'onglet souhaité --------------------------------------------- //
+            $( '.nav-tabs a[href="#{{ onglet_actif }}"]' ).tab( 'show' );
+
+            // ---- Paramétrage du WYSIWYG ------------------------------------------------------ //
+            if ( 1 == 1 ) {
+                
+                $( "textarea" ).summernote({
+                    lang:							"fr-FR",
+                    //toolbar: 						[['style', ['style']], ['style', ['bold', 'italic', 'underline', 'clear']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['insert', ['link']], ['table', ['table']], ['fullscreen', ['fullscreen']]]
+                    toolbar: 						[
+                        ['style', ['bold', 'italic', 'underline', 'clear']], 
+                        ['para', ['ul', 'ol', 'paragraph']], 
+                        ['insert', ['link']], 
+                        ['fullscreen', ['fullscreen']]
+                    ]
+                });
+
+            }
+            // ---------------------------------------------------------------------------------- //
+            
+
+            // ---- Datepicker ------------------------------------------------------------------ //
+            if ( 1 == 1 ) {
+                
+                $( ".datepicker").datepicker({
+                    dateFormat: 				    'dd/mm/yy',
+                    language:					    'fr',
+                });
+                
+                $( ".icone" ).click(function() {
+                    $( $(this).attr( "val" ) ).focus();
+                });
+                
+            }
+            // ---------------------------------------------------------------------------------- //
+
+
+            // ---- Gestion des acomptes -------------------------------------------------------- //
+            if ( 1 == 1 ) {
+				var nb_acompte = 					$("#projet_projetAcomptes div.row").length;
+
+                // ---- Demande d'ajout d'acompte ----------------------------------------------- //
+                $( "#btn_ajout_acompte" ).click(function() {
+                    var prototype =                	$("#projet_projetAcomptes" ).attr( "data-prototype" ).replace( /__name__/g, nb_acompte );
+
+					// ---- Ajout des champs à remplir ------------------------------------------ //
+					$("#projet_projetAcomptes" ).prepend( prototype );
+
+					// ---- Activation de l'option de suppression du mini-formulaire ------------ //
+					activerSuppressionAcompte();
+
+					// ---- Déblocage des champs à saisir --------------------------------------- //
+					$( "#block_projet_projetAcomptes_" + nb_acompte + " fieldset" ).each( function () {
+						$(this).parent().html( $(this).html() );
+					});
+
+					// ---- Mise en place du datepicker ----------------------------------------- //
+					if ( 1 == 1 ) {
+						$(".datepicker").datepicker({
+							dateFormat: 				'dd/mm/yy',
+							language: 					'fr',
+						});
+
+						$(".icone").click(function () {
+							$($(this).attr("val")).focus();
+						});
+					}
+
+					nb_acompte++;
+                });
+				// ------------------------------------------------------------------------------ //
+
+				// ---- Suppression d'acompte --------------------------------------------------- //
+				function activerSuppressionAcompte() {
+					$( 'button[data-action="supprimer"]' ).click(function() {
+						var target = 				this.dataset.target;
+						//alert( target );
+
+						$( target ).remove();
+					});
+				}
+				// ------------------------------------------------------------------------------ //
+
+				activerSuppressionAcompte();
+            }
+            // ---------------------------------------------------------------------------------- //
+
+
+            // ---- Gestion des uploads de fichiers --------------------------------------------- //
+            if ( 1 == 1 ) {
+
+                // ---- Suppression d'un fichier ------------------------------------------------ //
+                $( document ).on( "click", ".supprimer", function() {
+                    if ( confirm( "Voulez-vous vraiment supprimer ce fichier?" ) ) {
+                        var num_fichier =               $(this).attr( "data-id" );
+                        var num_projet =                $(this).attr( "data-projetId" );
+                        //alert( "Suppression d'un fichier... #" + num_fichier );
+                        
+                        // ---- Recherche & affichage du tarif pratiqué ------------------------- //
+                        $.ajax({
+                            type:                       "POST", 
+                            url:                        '{{ path( "bo_fichier_projet_suppression" ) }}', 
+                            data: {
+                                num_projet:             num_projet,
+                                num_fichier:            num_fichier
+                            },
+                            success:                    function( data ) { 
+                                //alert( "Retour AJAX : OK!" );
+                                $( "#liste_fichier > tbody" ).html( data.html );
+                            } 
+                        });
+                        // ---------------------------------------------------------------------- //
+                        
+                    }
+                });
+                // ------------------------------------------------------------------------------ //
+                
+            }
+            // ---------------------------------------------------------------------------------- //
+
+
+            $( "#projet_projetEtat" ).change( function() {
+                if ( 
+                    $(this).val() >= 4 && $(this).val() <= 6 &&
+                    $( "#projet_dateFacturation" ).val() == ''
+                ) {
+                    //alert( "xxx" );
+                    var today =                     new Date();
+                    var jour =                      ( today.getDate() < 10 ) ? '0' + today.getDate() : today.getDate();
+                    var mois =                      today.getMonth() + 1;
+                    mois =                          ( mois < 9 ) ? '0' + mois : mois;
+
+                    $( "#projet_dateFacturation" ).val( jour + "/" + mois + "/" + today.getFullYear() );
+                }
+            });
+
+            $( 'input[name="apercuPdf"]' ).click(function() {
+                if( $(this).is( ':checked' ) ) $('input[name="generationPdf"]').attr('checked', true);
+            });
+
+
+            // ---- Submit du formulaire : On prépare les valeurs des textareas pour qu'elles soient prises en compte par le controller
+            $( "form[name=projet]" ).submit(function() {
+                //alert( "On poste.." );
+                $( "#projet_description" ).val( $( "#description_editeur" ).code() );
+                $( "#projet_descriptionInterne" ).val( $( "#descriptionInterne_editeur" ).code() );
+            });
+            // ---------------------------------------------------------------------------------- //
+
+
+            // ---- Chargement de la page : Affichage des textes dans les textareas ------------- //
+            $( "#description_editeur + .note-editor > .note-editable" ).html( $( "#projet_description" ).val() );
+            $( "#descriptionInterne_editeur + .note-editor > .note-editable" ).html( $( "#projet_descriptionInterne" ).val() );
+
+        });
+
+    </script>
+
+{% endblock %}
+
+
+{% block _projet_projetAcomptes_widget %}
+
+    {{ form_widget( form ) }}
+
+{% endblock %}
+
+
+{% block _projet_projetAcomptes_entry_row %}
+
+    {{ form_widget( form ) }}
+
+{% endblock %}
+
+
+{% block _projet_projetAcomptes_entry_widget %}
+	
+    <div class="row" id="block_{{ id }}">
+		<div class="col-md-6 form-group">
+			<div class="col-md-12">
+				{% if form.montant.vars.valid %}
+					<div class="input-group">
+						<span class="input-group-addon">€</span>
+						{{ form_widget( form.montant, { 'attr' : { 'class' : 'form-control' } } ) }}
+					</div>
+				{% else %}
+					<div class="has-error">
+						<div class="input-group">
+							<span class="input-group-addon">€</span>
+							{{ form_widget( form.montant, { 'attr' : { 'class' : 'form-control' } } ) }}
+							<span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+						</div>
+			
+						{{ form_errors( form.montant ) }}
+					</div>
+				{% endif %}
+			</div>
+		</div>
+		
+		<div class="col-md-6 form-group">
+			<div class="col-md-9">
+				{% if form.datePaiement.vars.valid %}
+					<div class="input-group">
+						<span val="#block_projet_projetAcomptes___name___datePaiement" class="input-group-addon icone"><i class="fa fa-calendar"></i></span>
+						{{ form_widget( form.datePaiement, { 'attr' : { 'class' : 'form-control datepicker' } } ) }}
+					</div>
+				{% else %}
+					<div class="has-error">
+						<div class="input-group">
+							<span val="#block_projet_projetAcomptes___name___datePaiement" class="input-group-addon icone"><i class="fa fa-calendar"></i></span>
+							{{ form_widget( form.datePaiement, { 'attr' : { 'class' : 'form-control datepicker' } } ) }}
+							<span class="input-group-addon"><i class="fa fa-exclamation-triangle"></i></span>
+						</div>
+			
+						{{ form_errors( form.datePaiement ) }}
+					</div>
+				{% endif %}
+			</div>
+			<div class="col-md-2">
+				<button type="button" data-action="supprimer" data-target="#block_{{ id }}" class="btn btn-danger"><i class="fa fa-times"></i></button>
+			</div>
+		</div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Facture nº{{ num_facture }}</title>
+
+        <link href="/back/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" />
+        <link href="/back/css/font-awesome.min.css" media="all" rel="stylesheet" type="text/css" />
+
+        <style>
+            /*@font-face {
+                font-family: 'Elegance';
+                font-weight: normal;
+                font-style: normal;
+                font-variant: normal;
+                src: url("http://eclecticgeek.com/dompdf/fonts/Elegance.ttf") format("truetype");
+            }*/
+
+            @page {
+                margin:         100px 50px;
+				font-size:		14px;
+            }
+
+            footer {
+                position:       fixed; 
+                bottom:         -60px; 
+                left:           0px; 
+                right: 			0px;
+                height: 		50px; 
+
+                font-size: 		12px;
+                color:			#333333;
+                line-height: 	35px;
+            }
+
+            footer span { margin:0px 20px;}
+
+            .conteneur {width:100%; border:0px solid blue;}
+            .col-60 {float:left; width:60%; border:0px solid red;}
+            .col-50 {float:left; width:50%; border:0px solid red;}
+            .col-20 {float:left; width:20%; border:0px solid red;}
+            .grand {font-size: 15px;}
+            .petit {font-size: 12px;}
+            .gras {font-weight: bold;}
+            .droite {text-align:right;}
+            
+        </style>
+    </head>
+
+    <body>
+
+        <footer>
+            <div class="col-20" style="text-align: left;"><a href="http://www.asdweb.fr">ASD web</a></div>
+            <div class="col-60" style="text-align: center;">SIRET 501 836 241 00015 - SIREN 501 836 241 - APE-NAF 6201Z</div>
+            <div class="col-20" style="text-align: right;"><a href="mailto:contact@asdweb.fr">contact@asdweb.fr</a></div>
+            <div style="clear:both;"></div>
+        </footer>
+        
+        <main>
+            <div class="conteneur">
+
+                <!-- Emetteur -->
+                <div class="col-50">
+                    <h4>Emetteur</h4>
+                    <p>
+                        <span class="gras">
+                            Franck Langleron<br />
+                            (ASD web)
+                        </span><br />
+                        24, rue Colbert<br />
+                        33140 Villenave d'Ornon
+                    </p>
+                </div>
+
+                <!-- Destinataire -->
+                <div class="col-50">
+                    <h4>Destinataire</h4>
+                    <p>{{ destinataire | raw }}</p>
+                </div>
+                <div style="clear:both;"></div>
+
+                <p style="padding-top:50px;">Villenave d'Ornon, le {{ date_facturation }}</p>
+
+                <p class="gras" style="padding-top:50px;">
+                    <span class="grand">Facture</span><br />
+                    Ref. : {{ num_facture }}
+                </p>
+                <hr>
+
+                <p class="grand gras">{{ titre_projet }}</p>
+                {{ description_projet | raw }}
+
+                <!-- Ligne "Montant" -->
+                {% if acomptes is empty %}
+                    <div class="col-50" style="padding-top:30px;">
+                        <p class="gras">
+                            Montant :<br />
+                            Montant total :<br />
+                            <span class="petit" style="font-style: italic;">* T.V.A. non applicable art. 293 B du CGI</span>
+                        </p>
+                    </div>
+                    <div class="col-50 droite" style="padding-top:30px;">
+                        <p class="gras">
+                            {{ tarif }} €&nbsp;&nbsp;<br />
+                            {{ tarif }} €*
+                        </p>
+                    </div>
+                {% else %}
+                    
+                    <div class="col-50" style="padding-top:30px;">
+                        <p class="gras">
+                            Montant Total :<br />
+
+                            {% for acompte in acomptes %}
+                                Acompte du {{ acompte.datePaiement | date( "d/m/Y" ) }}<br />
+                            {% endfor %}
+
+                            Restant à payer :<br />
+                            <span class="petit" style="font-style: italic;">* T.V.A. non applicable art. 293 B du CGI</span>
+                        </p>
+                    </div>
+                    <div class="col-50 droite" style="padding-top:30px;">
+                        <p class="gras">
+                            {{ tarif }} €&nbsp;&nbsp;<br />
+                            {% set total_acompte = 0 %}
+
+                            {% for acompte in acomptes %}
+                                {{ acompte.montant }} €&nbsp;&nbsp;<br />
+                                {% set total_acompte = total_acompte + acompte.montant %}
+                            {% endfor %}
+
+                            {% set reste_a_payer = tarif - total_acompte %}
+                            {{ reste_a_payer }} €*
+                        </p>
+                    </div>
+                {% endif %}
+                <div style="clear:both;"></div>
+
+                <p class="gras" style="padding-top:50px;">Créé le {{ date_facturation_heure }} 10:00</p>
+                
+            </div>
+        </main>
+        
+    </body>
+</html>

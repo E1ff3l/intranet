@@ -1,0 +1,16 @@
+# FRONT
+back_routes:
+    resource:   "routes/back_routes.yaml"
+
+# BACK
+front_routes:
+    resource:   "routes/front_routes.yaml"
+
+# SECURITY
+admin_login:
+    path:       /console/login
+    controller: App\Controller\Back\SecurityController::login
+
+admin_logout:
+    path:       /console/logout
+    controller: App\Controller\Back\SecurityController::logout

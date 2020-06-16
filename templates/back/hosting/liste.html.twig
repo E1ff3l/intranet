@@ -1,0 +1,67 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Back-Office - Liste des hébergements{% endblock %}
+
+{% block body %}
+
+    <div class="modal-shiftfix">
+    
+        {% include 'back/partials/navigation.html.twig' %}
+
+        <div class="container-fluid main-content">
+            
+            <!-- Liste des hébergements -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="widget-container fluid-height clearfix">
+                        <div class="heading">
+                            <i class="fa fa-folder-open-o"></i>Hébergements existants
+                            <a href="{{ path( "bo_hosting_edition" ) }}" id="btn_ajouter" class="btn btn-primary ladda-button pull-right" data-style="expand-right"><span class="ladda-label"><i class="fa fa-plus-square"></i>Ajouter un hébergement</span></a >
+                        </div>
+
+                        <div class="widget-content padded clearfix">
+                            <table id="dataTable" class="table table-striped">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Site</th>
+                                    <th>Société</th>
+                                    <th width=200>Expire le</th>
+                                    <th width=100>Tarif</th>
+                                    <th width=100>&nbsp;</th>
+                                </thead>
+
+                                <tbody>
+                                    
+                                    {{ liste_hostings | raw }}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+
+        $(document).ready(function() {
+            
+            $( ".supprimer" ).click( function() {
+                if ( confirm( "Voulez-vous vraiment supprimer cet hébergement?" ) ) {
+                    var id_hosting =                $(this).attr( "data-id" );
+                    //alert( "Suppression de #" + id_hosting );
+                    window.location.href =          '/console/hosting_suppression/' + id_hosting;
+                }
+            });
+
+        });
+
+    </script>
+
+{% endblock %}

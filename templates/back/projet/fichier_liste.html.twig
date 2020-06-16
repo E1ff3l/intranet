@@ -1,0 +1,6 @@
+    {% for fichier in fichiers %}
+        <tr>
+            <td><a href="javascript:void(0);" data-id="{{ fichier.id }}" data-projetId="{{ fichier.projet.id }}" class="supprimer"><i class="fa fa-fw fa-times-circle"></i></a></td>
+            <td><a href="/fichier/{{ fichier.fichier }}" target="_blank">{{ fichier.fichier }}</a></td>
+        </tr>
+    {% endfor %}
