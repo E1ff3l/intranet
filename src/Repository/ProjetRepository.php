@@ -129,9 +129,11 @@ class ProjetRepository extends ServiceEntityRepository
                 if ( 1 == 1 ) {
                     $indice =           ( $_projet->getIndice() < 1000 ) ? '0' : '';
                     $fichier_facture =  'facture_' . $_projet->getDateFacturation()->format( 'Ymd' ) . $indice . $_projet->getIndice() . '.pdf';
-                    //echo "--- Recherche de " . $fichier_facture . "<br>";
+                    //dump( "--- Recherche de " . $fichier_facture);
+                    //dump( $_SERVER[ "DOCUMENT_ROOT" ] );
 
-                    if ( file_exists( $_SERVER[ "DOCUMENT_ROOT" ] . "fichier/" . $fichier_facture ) ) {
+                    if ( file_exists( $_SERVER[ "DOCUMENT_ROOT" ] . "/fichier/" . $fichier_facture ) ) {
+                        //dump( "-----> Le fichier existe!" );
                         $_projet->setFichierFacture( $fichier_facture );
                     }
                 }
@@ -139,9 +141,11 @@ class ProjetRepository extends ServiceEntityRepository
 
             }
             // ------------------------------------------------------------ //
+
         }
         // ---------------------------------------------------------------- //
-        dump($projets);
+        //dump($projets);
+        //dd("Fin");
 
         return $projets;
     }

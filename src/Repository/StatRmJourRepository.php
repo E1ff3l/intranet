@@ -61,7 +61,7 @@ class StatRmJourRepository extends ServiceEntityRepository
 			$statistique = 			new StatistiqueService();
 			$result = 				$statistique->getStatistiqueWithCurl( $today->sub( new \DateInterval( 'P1D' ) ), 'P1D', 0 );
 			$tab_result =   \unserialize($result);
-			if ($debug)	dump( $tab_result );
+			if ( 1 == 1 || $debug)	dump( $tab_result );
 			
 			foreach ($tab_result as $jour => $value ) {
 				$ca_total +=		$value[ 'ca' ][ 'ca_total' ];

@@ -36,14 +36,17 @@ class StatistiqueService extends AbstractController {
 		$page .=	"&f=" . $debut->add( new \DateInterval( $intervalle ) )->getTimestamp();		// new \DateInterval('P1D')
 		//$page .=	"&f=" . $debut->add(new \DateInterval('P1D'))->getTimestamp();
 		$page .=	"&dbg=" . $debug;
+
+		if ( $debug == 1 )	echo "--- du : " . $debut->format('d/m/Y') . " au " . $debut->add( new \DateInterval( $intervalle ) )->format('d/m/Y') . "<br>";
 		if ( $debug == 1 )	echo "--- Page : " . $page . "<br>";
 		
 		$curl = 				curl_init();
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_URL, $page);
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false );
 		$result = 				curl_exec($curl);
 		curl_close($curl);
-		//echo $result . "<br><br>";
+		//echo "---" . $result . "<br><br>";
 
 		return  $result;
 	}
@@ -85,6 +88,7 @@ class StatistiqueService extends AbstractController {
 			
 			// ---- Récupération des statistiques à traiter --------------- //
 			$result = 					$this->getStatistiqueWithCurl( $today->sub( new \DateInterval( $intervalle ) ), $intervalle, 0 );
+			//dd($result);
 			$tab_result =   			\unserialize($result);
 			//dd( $tab_result );
 	
@@ -93,7 +97,7 @@ class StatistiqueService extends AbstractController {
 				foreach ( $tab_result as $jour => $datas ) {
 					if ($datas[ "com" ] > 0) {
 						if ($debug)	echo $jour . " : Qq à traiter...<br>";
-						dump($datas);
+						//dump($datas);
 	
 						$stat_jour = 	new StatRmJour();
 						$stat_jour->setJour(new \DateTime($jour))
