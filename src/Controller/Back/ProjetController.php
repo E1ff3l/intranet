@@ -44,6 +44,12 @@ class ProjetController extends AbstractController
         $projets =                  $repo_projet->getProjetsWithFacture( $num_etat, false );
         //dd($projets);
 
+        /*foreach ( $projets as $projet ) {
+            if ( $projet->getId() == 503 ) {
+                dd($projet);
+            }
+        }*/
+
         return $this->render(
             'back/projet/liste.html.twig', 
             [ 
@@ -208,7 +214,7 @@ class ProjetController extends AbstractController
                 // ---- Enregistrement du fichier ------------------------- //
                 else {
                     file_put_contents( 
-                        $_SERVER[ "DOCUMENT_ROOT" ] . "fichier/" . $nom_fichier, 
+                        $_SERVER[ "DOCUMENT_ROOT" ] . "/fichier/" . $nom_fichier, 
                         $dompdf->output()
                     );
                 }

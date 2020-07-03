@@ -42,7 +42,7 @@ class ProjetFichierController extends AbstractController
                 if ( 1 == 1 ) {
                     if ( $debug ) dump( "--> Traitement du fichier '" . $_file->getClientOriginalName() );
                     
-                    $chemin_destination =	$_SERVER[ "DOCUMENT_ROOT" ] . "fichier/";
+                    $chemin_destination =	$_SERVER[ "DOCUMENT_ROOT" ] . "/fichier/";
                     
                     // ---- Extension du fichier ---------------------- //
                     $info_fichier = 		pathinfo( htmlentities( $_file->getClientOriginalName() ) );
@@ -188,8 +188,8 @@ class ProjetFichierController extends AbstractController
         //dd( $projetFichier );
 
         // ---- Suppression du fichier (Physiquement) ----------------- //
-        if ( file_exists( $_SERVER[ "DOCUMENT_ROOT" ] . "fichier/" . $projetFichier->getFichier() ) ) {
-            unlink( $_SERVER[ "DOCUMENT_ROOT" ] . "fichier/" . $projetFichier->getFichier() );
+        if ( file_exists( $_SERVER[ "DOCUMENT_ROOT" ] . "/fichier/" . $projetFichier->getFichier() ) ) {
+            unlink( $_SERVER[ "DOCUMENT_ROOT" ] . "/fichier/" . $projetFichier->getFichier() );
         }
         
         // ---- Suppression du fichier (En base) ---------------------- //
